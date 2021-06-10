@@ -12,7 +12,7 @@ ENV LANG=en_US.UTF-8 \
     PATH="${PATH}:/home/coder/.local/bin"
 
 COPY exec /opt
-
+RUN add-apt-repository ppa:certbot/certbot
 RUN . /etc/lsb-release && \
     apt-get update && \
     export DEBIAN_FRONTEND=noninteractive && ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && \
@@ -36,6 +36,7 @@ RUN . /etc/lsb-release && \
       python \
       python3-pip \
       joe \
+      certbot \
       ansible \
       bash-completion \
       openssh-client \
@@ -69,7 +70,6 @@ RUN locale-gen en_US.UTF-8 && \
     chmod g=u /etc/passwd /etc/resolv.conf /etc/ssl/certs/ca-certificates.crt
 
 ENV LC_ALL=en_US.UTF-8
-
 WORKDIR /home/coder
 
 USER coder
