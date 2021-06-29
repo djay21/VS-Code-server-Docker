@@ -40,6 +40,7 @@ RUN . /etc/lsb-release && \
       nano \
       iputils-ping \
       dnsutils \
+      unzip \
       bash-completion \
       openssh-client \
       maven && \
