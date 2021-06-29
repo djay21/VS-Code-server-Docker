@@ -12,9 +12,8 @@ ENV LANG=en_US.UTF-8 \
     PATH="${PATH}:/home/coder/.local/bin"
 
 COPY exec /opt
-RUN add-apt-repository ppa:certbot/certbot
 RUN . /etc/lsb-release && \
-    apt-get update && \
+    apt-get update && apt install software-properties-common -y &&\
     export DEBIAN_FRONTEND=noninteractive && ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && \
     apt-get install -y curl locales gnupg2 tzdata && locale-gen en_US.UTF-8 && \
     curl -sL https://deb.nodesource.com/setup_current.x | bash - && \
@@ -38,12 +37,22 @@ RUN . /etc/lsb-release && \
       joe \
       certbot \
       ansible \
+      nano \
+      iputils-ping \
+      dnsutils \
       bash-completion \
       openssh-client \
       maven && \
     npm install -g npm && \
     apt clean && \
     rm -rf /var/lib/apt/lists/* 
+
+
+RUN wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
+RUN unzip sonar* && rm -rf *.zip && mkdir -m 777 /opt/sonar-scanner
+RUN mv sonar* /opt/sonar-scanner
+RUN ln -s /opt/sonar-scanner/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner /usr/local/bin/sonar-scanner
+RUN sonar-scanner --version
 
 RUN locale-gen en_US.UTF-8 && \
     cd /tmp && \
@@ -82,7 +91,7 @@ RUN mkdir -p projects certs pip_install && \
     sudo chmod -R g+rwx .npm && \
     sudo chmod -R g+rwx pip_install && \
     sudo chmod -R g+rwx /usr/lib/node_modules && \
-    sudo chmod -R g+rwx /usr/bin/ && \
+    sudo chmod -R g+rwx /usr/bin/  /usr/local/bin/sonar-scanner && \
     sudo rm -frv .config/ && \
     sudo chgrp -R 0 /home/coder
 
